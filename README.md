@@ -63,10 +63,10 @@ pnpm install     # or npm install
 Copy `.env.example` to `.env` (`cp .env.example .env` on macOS/Linux, `copy .env.example .env` on Windows CMD, `Copy-Item .env.example .env` on PowerShell), then:
 
 ```bash
-pnpm dev
+pnpm start
 ```
 
-Runs at `http://localhost:5173`.
+Runs at `http://localhost:3000`.
 
 ### Tests
 
