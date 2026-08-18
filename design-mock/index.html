@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Inbox — Mock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #FAF8F3;
+    --surface: #FFFFFF;
+    --surface-sunken: #F2EFE7;
+    --border: #E4DFD3;
+    --ink: #1E1B16;
+    --ink-muted: #6E655A;
+    --ink-faint: #9A9184;
+    --accent: #1F5D57;
+    --accent-ink: #0F3630;
+    --accent-tint: #E4EFEC;
+    --amber: #B3792F;
+    --amber-tint: #F7ECDB;
+    --shadow: 0 1px 2px rgba(30, 27, 22, 0.06), 0 4px 12px rgba(30, 27, 22, 0.04);
+    --font-display: "Source Serif 4", Georgia, serif;
+    --font-body: "Public Sans", -apple-system, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17140F;
+      --surface: #1F1B15;
+      --surface-sunken: #262019;
+      --border: #353026;
+      --ink: #F3EEE4;
+      --ink-muted: #B3A996;
+      --ink-faint: #7C7263;
+      --accent: #4FA89C;
+      --accent-ink: #A9E0D5;
+      --accent-tint: #1D2E2A;
+      --amber: #D9A05B;
+      --amber-tint: #2E2417;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell { max-width: 1180px; margin: 0 auto; padding: 40px 28px 80px; }
+
+  header.masthead {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; padding-bottom: 22px; margin-bottom: 28px;
+    border-bottom: 1px solid var(--border); flex-wrap: wrap;
+  }
+
+  .brand { display: flex; align-items: baseline; gap: 12px; }
+
+  .brand-mark {
+    width: 30px; height: 30px; border-radius: 7px; background: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: none; transform: translateY(4px);
+  }
+  .brand-mark svg { width: 16px; height: 16px; }
+
+  h1.title { font-family: var(--font-display); font-weight: 600; font-size: 26px; margin: 0; letter-spacing: -0.01em; }
+
+  .item-count {
+    font-family: var(--font-mono); font-size: 13px; color: var(--ink-muted);
+    background: var(--surface-sunken); border: 1px solid var(--border);
+    padding: 5px 11px; border-radius: 20px;
+  }
+
+  .desk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 28px; align-items: start; }
+  @media (max-width: 860px) { .desk { grid-template-columns: 1fr; } }
+
+  .col { display: flex; flex-direction: column; gap: 20px; }
+
+  section.panel {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: var(--shadow); padding: 22px;
+  }
+
+  h2.panel-title { font-family: var(--font-display); font-size: 17px; font-weight: 600; margin: 0 0 16px; display: flex; align-items: center; gap: 9px; }
+  h2.panel-title .n { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); font-weight: 400; }
+
+  .tabs { display: inline-flex; background: var(--surface-sunken); border: 1px solid var(--border); border-radius: 9px; padding: 3px; margin-bottom: 14px; }
+  .tab {
+    font-family: var(--font-body); font-size: 13.5px; font-weight: 600; padding: 6px 16px;
+    border-radius: 6px; color: var(--ink-muted); cursor: pointer; border: none; background: transparent;
+  }
+  .tab.active { background: var(--surface); color: var(--accent-ink); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+
+  textarea.field, input.field {
+    width: 100%; background: var(--surface-sunken); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px; color: var(--ink); font-family: var(--font-body);
+    font-size: 14.5px; line-height: 1.5;
+  }
+  textarea.field { min-height: 92px; resize: vertical; }
+  .field::placeholder { color: var(--ink-faint); }
+  .field:focus, .ask-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .form-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+  .hint { font-size: 12.5px; color: var(--ink-faint); }
+  .error-hint { font-size: 12.5px; color: #B3452F; display: none; }
+  .error-hint.show { display: block; }
+
+  .btn {
+    font-family: var(--font-body); font-weight: 600; font-size: 14px; border: none; border-radius: 8px;
+    padding: 10px 20px; cursor: pointer; background: var(--accent); color: #FAFAF7; transition: opacity .15s;
+  }
+  .btn:hover { opacity: 0.88; }
+  .btn:active { opacity: 0.75; }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn:focus-visible, .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .items-list { display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow-y: auto; padding-right: 2px; }
+  .item-card { border: 1px solid var(--border); border-radius: 10px; padding: 13px 15px; background: var(--surface-sunken); animation: rise .25s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .item-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .badge { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  .badge.note { background: var(--accent-tint); color: var(--accent-ink); }
+  .badge.url { background: var(--amber-tint); color: var(--amber); }
+  .item-time { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint); margin-left: auto; }
+
+  .item-snippet {
+    font-size: 13.5px; color: var(--ink-muted); overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .item-ref { font-family: var(--font-mono); font-size: 11.5px; color: var(--accent-ink); margin-top: 5px; }
+
+  .empty-state { font-size: 13px; color: var(--ink-faint); text-align: center; padding: 24px 0; }
+
+  .ask-row { display: flex; gap: 10px; }
+  input.ask-input {
+    flex: 1; background: var(--surface-sunken); border: 1px solid var(--border); border-radius: 9px;
+    padding: 11px 14px; color: var(--ink); font-family: var(--font-body); font-size: 14.5px;
+  }
+  input.ask-input::placeholder { color: var(--ink-faint); }
+
+  .suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .suggestion {
+    font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-muted); background: var(--surface-sunken);
+    border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px; cursor: pointer;
+  }
+  .suggestion:hover { border-color: var(--accent); color: var(--accent-ink); }
+
+  .answer-block { margin-top: 20px; padding-top: 18px; border-top: 1px dashed var(--border); display: none; }
+  .answer-block.show { display: block; }
+  .answer-label, .sources-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
+  .answer-text { font-family: var(--font-display); font-size: 17.5px; line-height: 1.6; color: var(--ink); }
+  .cite { font-family: var(--font-mono); font-size: 12px; color: var(--amber); background: var(--amber-tint); padding: 1px 6px; border-radius: 5px; font-weight: 500; cursor: default; }
+
+  .sources-label { margin: 20px 0 10px; }
+  .source-card { border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: 0 9px 9px 0; padding: 11px 14px; background: var(--surface-sunken); margin-bottom: 8px; }
+  .source-top { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .source-num { font-family: var(--font-mono); font-size: 11px; color: var(--amber); font-weight: 500; }
+  .source-sim { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); margin-left: auto; font-variant-numeric: tabular-nums; }
+  .source-text { font-size: 13px; color: var(--ink-muted); line-height: 1.5; }
+
+  .loading-dots::after { content: '...'; animation: dots 1s steps(4, end) infinite; }
+  @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
+
+  .footnote { margin-top: 28px; font-size: 12px; color: var(--ink-faint); font-family: var(--font-mono); text-align: center; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="masthead">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 5.5C4 4.67 4.67 4 5.5 4H12V20H5.5C4.67 20 4 19.33 4 18.5V5.5Z" stroke="#FAFAF7" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M12 4H18.5C19.33 4 20 4.67 20 5.5V18.5C20 19.33 19.33 20 18.5 20H12" stroke="#FAFAF7" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <h1 class="title">Knowledge Inbox</h1>
+    </div>
+    <span class="item-count" id="itemCount">4 items saved</span>
+  </header>
+
+  <main class="desk">
+    <div class="col">
+      <section class="panel">
+        <h2 class="panel-title">Save something</h2>
+        <div class="tabs" role="tablist">
+          <button class="tab active" role="tab" aria-selected="true" data-type="note">Note</button>
+          <button class="tab" role="tab" aria-selected="false" data-type="url">URL</button>
+        </div>
+        <textarea class="field" id="noteField" placeholder="Paste a note…"></textarea>
+        <input class="field" id="urlField" type="text" placeholder="https://en.wikipedia.org/wiki/..." style="display:none;">
+        <div class="form-footer">
+          <span class="hint" id="formHint">Plain text only, no formatting needed</span>
+          <span class="error-hint" id="formError">This field can't be empty</span>
+          <button class="btn" id="saveBtn" type="button">Save</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">Saved items <span class="n" id="listCount">4</span></h2>
+        <div class="items-list" id="itemsList"></div>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="panel">
+        <h2 class="panel-title">Ask a question</h2>
+        <div class="ask-row">
+          <input class="ask-input" id="askInput" type="text" placeholder="What did you save about…">
+          <button class="btn" id="askBtn" type="button">Ask</button>
+        </div>
+        <div class="suggestions">
+          <span class="suggestion" data-q="What embedding model are we supposed to migrate to?">embedding model?</span>
+          <span class="suggestion" data-q="What is RAG?">what is RAG?</span>
+          <span class="suggestion" data-q="When does the new pricing take effect?">pricing?</span>
+        </div>
+
+        <div class="answer-block" id="answerBlock">
+          <div class="answer-label" id="answerLabel">Answer</div>
+          <p class="answer-text" id="answerText"></p>
+          <div class="sources-label">Sources</div>
+          <div id="sourcesList"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <p class="footnote">local interactive mock — canned Q&amp;A, no backend or real embeddings</p>
+</div>
+
+<script>
+  // ---- seed data --------------------------------------------------------
+  let items = [
+    { type: 'note', ref: null, text: 'Standup notes: migrate embeddings table to text-embedding-3-small — current model deprecated end of quarter.', time: '2h ago' },
+    { type: 'url', ref: 'en.wikipedia.org/wiki/Retrieval-augmented_generation', text: 'Retrieval-augmented generation (RAG) is a technique that enables large language models to retrieve and incorporate new information not part of their original training data…', time: 'yesterday' },
+    { type: 'note', ref: null, text: 'Renewal terms: contract auto-renews unless cancelled 30 days before the period ends. Confirm with legal before Q3.', time: '2 days ago' },
+    { type: 'url', ref: 'blog.example.com/pricing-changes', text: 'Our new pricing takes effect March 1st. Existing customers on annual plans are grandfathered for one renewal cycle…', time: '3 days ago' },
+  ];
+
+  // canned "RAG" responses keyed by keyword — stands in for the real
+  // embed-question -> cosine-similarity -> LLM pipeline this mock doesn't run
+  const cannedAnswers = [
+    {
+      keywords: ['embedding', 'migrate', 'model'],
+      answer: 'According to your notes, you should migrate the embeddings table to <strong>text-embedding-3-small</strong> before the current model is deprecated at the end of the quarter <span class="cite">1</span>.',
+      sources: [
+        { label: '[1] Note', sim: '0.891', text: 'Standup notes: migrate embeddings table to text-embedding-3-small — current model deprecated end of quarter.' },
+        { label: '[2] URL · en.wikipedia.org', sim: '0.412', text: 'Retrieval-augmented generation (RAG) is a technique that enables large language models to retrieve new information…' },
+      ],
+    },
+    {
+      keywords: ['rag', 'retrieval'],
+      answer: 'Based on your saved Wikipedia article, RAG (retrieval-augmented generation) is a technique that lets a language model retrieve and incorporate information outside its original training data before answering <span class="cite">1</span>.',
+      sources: [
+        { label: '[1] URL · en.wikipedia.org', sim: '0.934', text: 'Retrieval-augmented generation (RAG) is a technique that enables large language models to retrieve and incorporate new information not part of their original training data…' },
+      ],
+    },
+    {
+      keywords: ['pricing', 'price', 'renew'],
+      answer: 'Your saved content says new pricing takes effect <strong>March 1st</strong>, and existing annual customers are grandfathered for one renewal cycle <span class="cite">1</span>. Separately, contracts auto-renew unless cancelled 30 days before the period ends <span class="cite">2</span>.',
+      sources: [
+        { label: '[1] URL · blog.example.com', sim: '0.877', text: 'Our new pricing takes effect March 1st. Existing customers on annual plans are grandfathered for one renewal cycle…' },
+        { label: '[2] Note', sim: '0.503', text: 'Renewal terms: contract auto-renews unless cancelled 30 days before the period ends. Confirm with legal before Q3.' },
+      ],
+    },
+  ];
+
+  const noMatchAnswer = "I don't have any saved content that answers that yet — try saving a relevant note or URL first.";
+
+  // ---- tab switching ------------------------------------------------------
+  const tabs = document.querySelectorAll('.tab');
+  const noteField = document.getElementById('noteField');
+  const urlField = document.getElementById('urlField');
+  const formHint = document.getElementById('formHint');
+  let activeType = 'note';
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      activeType = tab.dataset.type;
+      const isNote = activeType === 'note';
+      noteField.style.display = isNote ? 'block' : 'none';
+      urlField.style.display = isNote ? 'none' : 'block';
+      formHint.textContent = isNote ? 'Plain text only, no formatting needed' : 'Must be a public, non-authenticated page';
+      hideError();
+    });
+  });
+
+  // ---- save flow ------------------------------------------------------
+  const formError = document.getElementById('formError');
+  function hideError() { formError.classList.remove('show'); }
+
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    const isNote = activeType === 'note';
+    const value = (isNote ? noteField.value : urlField.value).trim();
+    if (!value) { formError.classList.add('show'); return; }
+    hideError();
+
+    items.unshift({
+      type: activeType,
+      ref: isNote ? null : value.replace(/^https?:\/\//, ''),
+      text: isNote ? value : 'Fetching page content…',
+      time: 'just now',
+    });
+    renderItems();
+    if (isNote) noteField.value = ''; else urlField.value = '';
+
+    // simulate the server-side fetch+chunk+embed step for a URL save
+    if (!isNote) {
+      setTimeout(() => {
+        items[0].text = 'Page content extracted and chunked — ready to be asked about.';
+        renderItems();
+      }, 900);
+    }
+  });
+
+  // ---- render items list ------------------------------------------------
+  function renderItems() {
+    const list = document.getElementById('itemsList');
+    document.getElementById('itemCount').textContent = `${items.length} items saved`;
+    document.getElementById('listCount').textContent = items.length;
+
+    if (!items.length) {
+      list.innerHTML = '<p class="empty-state">Nothing saved yet — add a note or URL to get started.</p>';
+      return;
+    }
+
+    list.innerHTML = items.map(item => `
+      <article class="item-card">
+        <div class="item-meta">
+          <span class="badge ${item.type}">${item.type}</span>
+          <span class="item-time">${item.time}</span>
+        </div>
+        <p class="item-snippet">${item.text}</p>
+        ${item.ref ? `<div class="item-ref">${item.ref}</div>` : ''}
+      </article>
+    `).join('');
+  }
+  renderItems();
+
+  // ---- ask flow ------------------------------------------------------
+  const askInput = document.getElementById('askInput');
+  const askBtn = document.getElementById('askBtn');
+  const answerBlock = document.getElementById('answerBlock');
+  const answerLabel = document.getElementById('answerLabel');
+  const answerText = document.getElementById('answerText');
+  const sourcesList = document.getElementById('sourcesList');
+
+  function runQuery(question) {
+    if (!question.trim()) return;
+    answerBlock.classList.add('show');
+    answerLabel.innerHTML = 'Answer <span class="loading-dots"></span>';
+    answerText.textContent = '';
+    sourcesList.innerHTML = '';
+    askBtn.disabled = true;
+
+    setTimeout(() => {
+      const lower = question.toLowerCase();
+      const match = cannedAnswers.find(a => a.keywords.some(k => lower.includes(k)));
+      answerLabel.textContent = 'Answer';
+      askBtn.disabled = false;
+
+      if (!match) {
+        answerText.textContent = noMatchAnswer;
+        sourcesList.innerHTML = '';
+        return;
+      }
+
+      answerText.innerHTML = match.answer;
+      sourcesList.innerHTML = match.sources.map(s => `
+        <div class="source-card">
+          <div class="source-top">
+            <span class="source-num">${s.label}</span>
+            <span class="source-sim">similarity ${s.sim}</span>
+          </div>
+          <p class="source-text">"${s.text}"</p>
+        </div>
+      `).join('');
+    }, 650); // simulated retrieval + LLM latency
+  }
+
+  askBtn.addEventListener('click', () => runQuery(askInput.value));
+  askInput.addEventListener('keydown', e => { if (e.key === 'Enter') runQuery(askInput.value); });
+
+  document.querySelectorAll('.suggestion').forEach(s => {
+    s.addEventListener('click', () => { askInput.value = s.dataset.q; runQuery(s.dataset.q); });
+  });
+</script>
+</body>
+</html>
