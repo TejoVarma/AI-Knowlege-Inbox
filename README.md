@@ -9,7 +9,7 @@ Save notes or URLs, ask questions over everything saved. RAG pipeline (chunk →
 
 ## Setup
 
-Requires Python 3.11+, Node 20+ (Vite's toolchain fails on Node 18 with a `SyntaxError` in `node:util` — if you use `nvm`, run `nvm use 20` before installing), and an OpenAI API key with billing enabled.
+Requires Python 3.11+, Node 20+, and an OpenAI API key with billing enabled.
 
 ### Backend
 
